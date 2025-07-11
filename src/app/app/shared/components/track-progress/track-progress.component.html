@@ -1,0 +1,11 @@
+<div class="track-progress">
+  <span>{{ formatTime(currentTime) }}</span>
+  <input
+    type="range"
+    min="0"
+    [max]="duration"
+    [value]="currentTime"
+    (input)="onSeek($event)"
+  />
+  <span>{{ formatTime(duration) }}</span>
+</div>

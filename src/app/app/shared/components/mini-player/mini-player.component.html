@@ -1,0 +1,24 @@
+<div class="mini-player" *ngIf="tracks.length > 0">
+  <div class="track-info">
+    <p><strong>{{ tracks[currentIndex].title }}</strong> — {{ tracks[currentIndex].artist }}</p>
+  </div>
+
+  <app-track-progress
+    [currentTime]="currentTime"
+    [duration]="duration"
+    (seek)="onSeek($event)"
+  ></app-track-progress>
+
+  <app-audio-controls
+    [isPlaying]="isPlaying"
+    [volume]="volume"
+    (playPauseToggle)="togglePlayPause()"
+    (volumeChange)="changeVolume($event)"
+  ></app-audio-controls>
+
+  <div class="controls">
+    <button (click)="prevTrack()">⏮️</button>
+    <button (click)="togglePlayPause()">{{ isPlaying ? '⏸️' : '▶️' }}</button>
+    <button (click)="nextTrack()">⏭️</button>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+:host {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 32px;
+  display: block;
+  position: relative;
+}
+
+.search-bar {
+  width: 100%;
+  position: relative;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px 40px 8px 14px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    outline: none;
+    background-color: #fff;
+  }
+}
+
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #000;
+  }
+}

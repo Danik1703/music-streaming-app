@@ -1,0 +1,9 @@
+<app-navbar (searchChanged)="onSearch($event)"></app-navbar>
+<app-sidebar></app-sidebar>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<app-mini-player></app-mini-player>
+<app-notification-popup></app-notification-popup>

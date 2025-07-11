@@ -1,0 +1,130 @@
+.track-list {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 12px 0;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+  }
+}
+
+.track-card {
+  background: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  padding: 16px;
+  min-width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+  }
+
+  .track-info {
+    h4 {
+      margin: 0 0 6px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #1a1a1a;
+    }
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+  }
+
+  iframe {
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  }
+
+  .controls {
+    display: flex;
+    gap: 14px;
+    button {
+      background-color: #007acc;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      padding: 8px 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #005fa3;
+      }
+    }
+    label {
+      font-size: 0.85rem;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      input[type="range"] {
+        width: 110px;
+        height: 5px;
+        border-radius: 4px;
+        background: #ddd;
+        cursor: pointer;
+
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #007acc;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+        &::-webkit-slider-thumb:hover {
+          background: #005fa3;
+        }
+      }
+    }
+  }
+
+  .track-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    span {
+      font-size: 0.85rem;
+      color: #666;
+      width: 38px;
+      text-align: center;
+    }
+
+    input[type="range"] {
+      flex-grow: 1;
+      height: 5px;
+      border-radius: 4px;
+      background: #ddd;
+      cursor: pointer;
+
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #007acc;
+        cursor: pointer;
+      }
+      &::-webkit-slider-thumb:hover {
+        background: #005fa3;
+      }
+    }
+  }
+}

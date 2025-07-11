@@ -1,0 +1,12 @@
+<nav class="navbar">
+  <a class="logo" routerLink="/">🎵 MusicApp</a>
+
+  <app-search-filters (searchChanged)="onSearchChange($event)"></app-search-filters>
+
+  <div class="navbar-actions">
+    <button class="icon-button" title="Сповіщення">🔔</button>
+    <div class="avatar" title="Профіль">
+      <img src="https://i.pravatar.cc/32" alt="Аватар користувача" />
+    </div>
+  </div>
+</nav>

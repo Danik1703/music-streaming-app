@@ -1,0 +1,21 @@
+h2 {
+  font-size: 2rem;
+  margin: 20px 0;
+  text-align: center;
+  color: #222;
+}
+
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #999;
+  }
+}

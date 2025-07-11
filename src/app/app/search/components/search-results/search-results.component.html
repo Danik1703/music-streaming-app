@@ -1,0 +1,17 @@
+<div *ngIf="filteredTracks.length === 0" class="no-results">
+  Пісні не знайдені.
+</div>
+
+<ul class="track-list">
+  <li *ngFor="let track of filteredTracks; let i = index"
+      (click)="onPlayTrack(i)"
+      [class.active]="currentIndex === i">
+    <img [src]="track.coverUrl || 'https://via.placeholder.com/60'" alt="{{ track.title }} cover" />
+    <div class="track-info">
+      <h4>{{ track.title }}</h4>
+      <p>{{ track.artist }}</p>
+      <p *ngIf="track.duration">Тривалість: {{ track.duration }}</p>
+      <a *ngIf="track.url" href="{{ track.url }}" target="_blank" (click)="$event.stopPropagation()">Слухати</a>
+    </div>
+  </li>
+</ul>

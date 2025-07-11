@@ -1,0 +1,10 @@
+<div class="search-bar">
+  <input
+    type="text"
+    [(ngModel)]="searchTerm"
+    placeholder="Пошук пісень або виконавця..."
+    (input)="onSearchChange()"
+    (keyup.enter)="onSearchChange()"
+  />
+  <button *ngIf="searchTerm" class="clear-btn" (click)="clearSearch()">✖️</button>
+</div>

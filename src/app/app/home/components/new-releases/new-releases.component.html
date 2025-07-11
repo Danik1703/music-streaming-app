@@ -1,0 +1,20 @@
+<div class="new-releases">
+  <h2>Новинки</h2>
+  <div class="release-list">
+    <div class="release-item" *ngFor="let release of releases">
+      <div class="cover-wrapper">
+        <div
+          class="cover"
+          [ngStyle]="{ 'background-image': 'url(' + release.cover + ')' }"
+          [attr.aria-label]="release.title"
+          role="img"
+        ></div>
+      </div>
+      <div class="info">
+        <div class="title">{{ release.title }}</div>
+        <div class="artist">{{ release.artist }}</div>
+        <div class="date">{{ release.releaseDate | date:'dd MMM yyyy' }}</div>
+      </div>
+    </div>
+  </div>
+</div>
