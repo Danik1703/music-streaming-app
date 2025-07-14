@@ -1,1 +1,35 @@
-<p>register-form works!</p>
+<div class="auth-container">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <h2>Реєстрація</h2>
+
+    <div class="form-group">
+      <label>Ім’я</label>
+      <input type="text" formControlName="name" placeholder="Ваше ім’я" />
+      <div class="error" *ngIf="name.invalid && name.touched">
+        Ім’я є обов’язковим
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Електронна пошта</label>
+      <input type="email" formControlName="email" placeholder="example@mail.com" />
+      <div class="error" *ngIf="email.invalid && email.touched">
+        Введіть коректну електронну адресу
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Пароль</label>
+      <input type="password" formControlName="password" placeholder="Придумайте пароль" />
+      <div class="error" *ngIf="password.invalid && password.touched">
+        Пароль має містити щонайменше 6 символів
+      </div>
+    </div>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <button type="submit" [disabled]="registerForm.invalid || loading">
+      {{ loading ? 'Реєстрація...' : 'Зареєструватися' }}
+    </button>
+  </form>
+</div>

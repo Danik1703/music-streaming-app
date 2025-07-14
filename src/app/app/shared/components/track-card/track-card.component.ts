@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Track } from 'src/app/services/listening-history.service'; // Импорт интерфейса Track
 
 declare var SC: any;
 
@@ -8,8 +9,8 @@ declare var SC: any;
   templateUrl: './track-card.component.html',
   styleUrls: ['./track-card.component.scss']
 })
-export class TrackCardComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() track!: { title: string; artist: string; url: string };
+export class TrackCardComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+  @Input() track!: Track;  // Изменили тип на Track
   @Input() index!: number;
   @Input() isActive = false;
   @Output() playTrack = new EventEmitter<number>();
@@ -46,11 +47,6 @@ export class TrackCardComponent implements OnInit, OnDestroy, OnChanges {
     if (this.intervalId) clearInterval(this.intervalId);
   }
 
-  prepareUrl() {
-    const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(this.track.url)}&auto_play=false`;
-    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
-  }
-
   ngAfterViewInit() {
     setTimeout(() => {
       if (this.iframeRef?.nativeElement) {
@@ -77,6 +73,12 @@ export class TrackCardComponent implements OnInit, OnDestroy, OnChanges {
       }
     }, 300);
   }
+
+prepareUrl() {
+  const url = this.track.audioUrl ?? ''; 
+  const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&auto_play=false`;
+  this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+}
 
   togglePlay() {
     if (!this.widget) return;

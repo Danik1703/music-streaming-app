@@ -1,1 +1,12 @@
-<p>playlist-detail works!</p>
+<div *ngIf="playlist">
+  <h4>{{ playlist.name }}</h4>
+  <p>{{ playlist.description }}</p>
+
+  <h5>Пісні</h5>
+  <ul>
+    <li *ngFor="let song of playlist.songs">
+      {{ song.title }} — {{ song.artist }}
+      <button (click)="onRemoveSong(song.id)">❌</button>
+    </li>
+  </ul>
+</div>

@@ -1,1 +1,27 @@
-<p>playlist-list works!</p>
+<div>
+  <h3>Плейлисти</h3>
+  <ul>
+    <li
+      *ngFor="let pl of playlists"
+      [class.selected]="pl === selectedPlaylist"
+      (click)="selectPlaylist(pl)"
+    >
+      {{ pl.name }}
+      <button (click)="deletePlaylist(pl.id); $event.stopPropagation()">🗑️</button>
+    </li>
+  </ul>
+
+  <app-playlist-detail
+    *ngIf="selectedPlaylist"
+    [playlist]="selectedPlaylist"
+    (removeSong)="removeSongFromPlaylist($event)"
+  >
+  </app-playlist-detail>
+
+  <app-playlist-editor
+    *ngIf="selectedPlaylist"
+    [playlist]="selectedPlaylist"
+    (save)="onSave($event)"
+  >
+  </app-playlist-editor>
+</div>

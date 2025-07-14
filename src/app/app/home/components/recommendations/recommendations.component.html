@@ -2,11 +2,11 @@
 
 <div class="track-list">
   <app-track-card
-    *ngFor="let track of filteredTracks; index as i"
+    *ngFor="let track of filteredTracks; let i = index"
     [track]="track"
     [index]="i"
     [isActive]="i === currentPlayingIndex"
-    (playTrack)="onPlayTrack($event)">
+    (playTrack)="onPlayTrack(i)">
   </app-track-card>
 
   <p *ngIf="filteredTracks.length === 0">

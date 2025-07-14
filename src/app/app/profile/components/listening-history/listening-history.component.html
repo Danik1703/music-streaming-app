@@ -1,1 +1,28 @@
-<p>listening-history works!</p>
+<div class="listening-history">
+  <h1>Історія прослуховувань</h1>
+
+  <div *ngIf="listeningHistory.length > 0; else noHistory">
+    <div class="track-list">
+      <div 
+        class="track-card"
+        [class.active]="i === currentPlayingIndex"
+        *ngFor="let track of listeningHistory; let i = index"
+        (click)="onPlayTrack(i)"
+      >
+        <img 
+          class="cover" 
+          [src]="track.coverUrl && track.coverUrl.length > 0 ? track.coverUrl : 'https://via.placeholder.com/320x180.png?text=No+Cover'" 
+          alt="Обкладинка {{track.title}}" 
+        />
+        <div class="track-info">
+          <h4>{{ track.title }}</h4>
+          <p>{{ track.artist }} <span *ngIf="track.album">— {{ track.album }}</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noHistory>
+    <p>Історія прослуховувань порожня.</p>
+  </ng-template>
+</div>

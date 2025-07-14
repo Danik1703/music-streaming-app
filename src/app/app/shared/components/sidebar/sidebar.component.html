@@ -3,5 +3,13 @@
     <li><a routerLink="/home/top-charts" routerLinkActive="active">🏆 Топ-чарти</a></li>
     <li><a routerLink="/home/recommendations" routerLinkActive="active">🎯 Рекомендації</a></li>
     <li><a routerLink="/home/new-releases" routerLinkActive="active">🔥 Новинки</a></li>
+    <li><a routerLink="/profile/history" routerLinkActive="active">🎧 Історія прослуховувань</a></li>
+  </ul>
+
+  <h3 style="margin-top: 32px; margin-bottom: 12px;">🎵 Мої плейлисти</h3>
+  <ul class="menu">
+    <li *ngFor="let playlist of playlists">
+      <a [routerLink]="['/playlists', playlist.id]" routerLinkActive="active">{{ playlist.name }}</a>
+    </li>
   </ul>
 </aside>

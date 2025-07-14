@@ -1,0 +1,15 @@
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &.selected, &:hover {
+    background-color: #a8bdae33;
+  }
+}

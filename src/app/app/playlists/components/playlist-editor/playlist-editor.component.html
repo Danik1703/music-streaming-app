@@ -1,1 +1,11 @@
-<p>playlist-editor works!</p>
+<div>
+  <h3>Редагування плейлиста</h3>
+  <label>Назва:
+    <input [(ngModel)]="editedPlaylist.name" />
+  </label>
+  <label>Опис:
+    <input [(ngModel)]="editedPlaylist.description" />
+  </label>
+
+  <button (click)="savePlaylist()">Зберегти</button>
+</div>

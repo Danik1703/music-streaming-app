@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule, Injectable } from '@angular/core';
+import { RouterModule, Routes, CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { RecommendationsComponent } from './app/home/components/recommendations/recommendations.component';
 import { NewReleasesComponent } from './app/home/components/new-releases/new-releases.component';
@@ -24,31 +24,61 @@ import { VolumeControlComponent } from './app/player/components/volume-control/v
 import { LoginFormComponent } from './app/auth/components/login-form/login-form.component';
 import { RegisterFormComponent } from './app/auth/components/register-form/register-form.component';
 
+import { AuthService } from './services/auth.service';
+
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) { }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/auth/register']);
+      return false;
+    }
+    return true;
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class NoAuthGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) { }
+
+  canActivate(): boolean {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/home/recommendations']);
+      return false;
+    }
+    return true;
+  }
+}
+
 const routes: Routes = [
-  { path: '', redirectTo: 'home/recommendations', pathMatch: 'full' },
+  { path: '', redirectTo: 'auth/register', pathMatch: 'full' },
 
-  { path: 'home/recommendations', component: RecommendationsComponent },
-  { path: 'home/new-releases', component: NewReleasesComponent },
-  { path: 'home/top-charts', component: TopChartsComponent },
+  { path: 'auth/register', component: RegisterFormComponent, canActivate: [NoAuthGuard] },
+  { path: 'auth/login', component: LoginFormComponent, canActivate: [NoAuthGuard] },
 
-  { path: 'search/results', component: SearchResultsComponent },
-  { path: 'search/filters', component: SearchFiltersComponent },
+  { path: 'home/recommendations', component: RecommendationsComponent, canActivate: [AuthGuard] },
+  { path: 'home/new-releases', component: NewReleasesComponent, canActivate: [AuthGuard] },
+  { path: 'home/top-charts', component: TopChartsComponent, canActivate: [AuthGuard] },
 
-  { path: 'playlists', component: PlaylistListComponent },
-  { path: 'playlists/detail', component: PlaylistDetailComponent },
-  { path: 'playlists/editor', component: PlaylistEditorComponent },
+  { path: 'search/results', component: SearchResultsComponent, canActivate: [AuthGuard] },
+  { path: 'search/filters', component: SearchFiltersComponent, canActivate: [AuthGuard] },
 
-  { path: 'favorites/tracks', component: FavoriteTracksComponent },
-  { path: 'favorites/playlists', component: FavoritePlaylistsComponent },
+  { path: 'playlists', component: PlaylistListComponent, canActivate: [AuthGuard] },
+  { path: 'playlists/:id', component: PlaylistDetailComponent, canActivate: [AuthGuard] },
+  { path: 'playlists/:id/edit', component: PlaylistEditorComponent, canActivate: [AuthGuard] },
 
-  { path: 'profile/settings', component: UserSettingsComponent },
-  { path: 'profile/history', component: ListeningHistoryComponent },
+  { path: 'favorites/tracks', component: FavoriteTracksComponent, canActivate: [AuthGuard] },
+  { path: 'favorites/playlists', component: FavoritePlaylistsComponent, canActivate: [AuthGuard] },
 
-  { path: 'player/fullscreen', component: PlayerFullscreenComponent },
-  { path: 'player/volume', component: VolumeControlComponent },
+  { path: 'profile/settings', component: UserSettingsComponent, canActivate: [AuthGuard] },
+  { path: 'profile/history', component: ListeningHistoryComponent, canActivate: [AuthGuard] },
 
-  { path: 'auth/login', component: LoginFormComponent },
-  { path: 'auth/register', component: RegisterFormComponent },
+  { path: 'player/fullscreen', component: PlayerFullscreenComponent, canActivate: [AuthGuard] },
+  { path: 'player/volume', component: VolumeControlComponent, canActivate: [AuthGuard] },
+
+  { path: '**', redirectTo: 'auth/register' }
 ];
 
 @NgModule({

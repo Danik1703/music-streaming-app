@@ -1,21 +1,66 @@
 h2 {
-  font-size: 2rem;
-  margin: 20px 0;
+  font-size: 2.2rem;
+  margin: 2rem 0 1.5rem;
   text-align: center;
-  color: #222;
+  color: #1e1e1e;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .track-list {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 900px;
+  gap: 1.5rem;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 1rem;
 
   p {
     text-align: center;
     font-size: 1.1rem;
     color: #999;
+  }
+}
+
+.track-item {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+    flex: 1;
+  }
+
+  button {
+    background: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+      background: #303f9f;
+    }
+
+    &:nth-child(3) {
+      background: #00bfa5;
+
+      &:hover {
+        background: #008e76;
+      }
+    }
   }
 }

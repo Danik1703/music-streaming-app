@@ -70,7 +70,7 @@ export class MiniPlayerComponent implements OnChanges {
     if (this.currentIndex < this.tracks.length - 1) {
       this.currentIndex++;
     } else {
-      this.currentIndex = 0; // зациклить
+      this.currentIndex = 0; 
     }
     this.trackChanged.emit(this.currentIndex);
     this.loadTrack(this.currentIndex);
