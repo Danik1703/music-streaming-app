@@ -3,12 +3,13 @@ export interface Playlist {
   name: string;
   description?: string;
   songs: Song[];
+  cover?: string;  
+  title?: string;  
 }
-
 export interface Song {
   id: number;
   title: string;
   artist: string;
   audioUrl: string;
-  duration: number; 
+  duration?: number;  
 }

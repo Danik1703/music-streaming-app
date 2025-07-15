@@ -1,7 +1,5 @@
-<div class="playlist-card" (click)="onSelect()">
-  <img [src]="playlist.cover" alt="Playlist cover" />
-  <div class="playlist-info">
-    <h4>{{ playlist.title }}</h4>
-    <p>{{ playlist.tracksCount }} треків</p>
-  </div>
+<div class="playlist-card" (click)="onClick()">
+  <img [src]="playlist.cover || 'assets/default-cover.jpg'" alt="Playlist cover" />
+  <h4>{{ playlist.name }}</h4>
+  <p>{{ playlist.songs.length }} треків</p>
 </div>

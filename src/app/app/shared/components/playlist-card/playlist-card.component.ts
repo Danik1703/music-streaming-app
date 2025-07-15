@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Playlist } from 'src/app/services/playlist.service';
 
 @Component({
   selector: 'app-playlist-card',
@@ -6,10 +7,10 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./playlist-card.component.scss']
 })
 export class PlaylistCardComponent {
-  @Input() playlist: any; // { title: string, cover: string, tracksCount: number }
-  @Output() selectPlaylist = new EventEmitter<any>();
+  @Input() playlist!: Playlist;
+  @Output() clicked = new EventEmitter<void>();
 
-  onSelect() {
-    this.selectPlaylist.emit(this.playlist);
+  onClick() {
+    this.clicked.emit();
   }
 }

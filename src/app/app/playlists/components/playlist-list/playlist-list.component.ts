@@ -11,23 +11,19 @@ import { Subscription } from 'rxjs';
 export class PlaylistListComponent implements OnInit, OnDestroy {
   playlists: Playlist[] = [];
   selectedPlaylist?: Playlist;
-  private sub!: Subscription;
+  private sub?: Subscription;
 
   constructor(private playlistService: PlaylistService) {}
 
   ngOnInit() {
     this.sub = this.playlistService.playlists$.subscribe(data => {
       this.playlists = data;
-      if (data.length && !this.selectedPlaylist) {
-        this.selectPlaylist(data[0]);
-      } else {
-        this.selectedPlaylist = data.find(p => p.id === this.selectedPlaylist?.id);
-      }
+      this.selectedPlaylist = data.find(p => p.id === this.selectedPlaylist?.id);
     });
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe(); 
+    this.sub?.unsubscribe();
   }
 
   selectPlaylist(playlist: Playlist) {
@@ -35,16 +31,15 @@ export class PlaylistListComponent implements OnInit, OnDestroy {
   }
 
   deletePlaylist(id: number) {
-    if (confirm('Видалити цей плейлист?')) {
+    if (confirm('Видалити плейлист?')) {
       this.playlistService.delete(id);
+      if (this.selectedPlaylist?.id === id) {
+        this.selectedPlaylist = undefined;
+      }
     }
   }
 
-  onSave(updatedPlaylist: Playlist) {
-    this.playlistService.update(updatedPlaylist);
-  }
-
-  removeSongFromPlaylist(songId: number) {
+  deleteSongFromPlaylist(songId: number) {
     if (!this.selectedPlaylist) return;
     this.selectedPlaylist.songs = this.selectedPlaylist.songs.filter(s => s.id !== songId);
     this.playlistService.update(this.selectedPlaylist);

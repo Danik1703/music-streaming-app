@@ -1,27 +1,17 @@
-<div>
-  <h3>Плейлисти</h3>
+<div *ngFor="let playlist of playlists">
+  <app-playlist-card
+    [playlist]="playlist"
+    (clicked)="selectPlaylist(playlist)"
+  ></app-playlist-card>
+  <button (click)="deletePlaylist(playlist.id)">Видалити</button>
+</div>
+
+<div *ngIf="selectedPlaylist">
+  <h3>{{ selectedPlaylist.name }}</h3>
   <ul>
-    <li
-      *ngFor="let pl of playlists"
-      [class.selected]="pl === selectedPlaylist"
-      (click)="selectPlaylist(pl)"
-    >
-      {{ pl.name }}
-      <button (click)="deletePlaylist(pl.id); $event.stopPropagation()">🗑️</button>
+    <li *ngFor="let song of selectedPlaylist.songs">
+      {{ song.title }} — {{ song.artist }}
+      <button (click)="deleteSongFromPlaylist(song.id)">Видалити трек</button>
     </li>
   </ul>
-
-  <app-playlist-detail
-    *ngIf="selectedPlaylist"
-    [playlist]="selectedPlaylist"
-    (removeSong)="removeSongFromPlaylist($event)"
-  >
-  </app-playlist-detail>
-
-  <app-playlist-editor
-    *ngIf="selectedPlaylist"
-    [playlist]="selectedPlaylist"
-    (save)="onSave($event)"
-  >
-  </app-playlist-editor>
 </div>

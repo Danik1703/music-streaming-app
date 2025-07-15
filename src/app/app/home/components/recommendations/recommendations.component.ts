@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { ListeningHistoryService, Track } from 'src/app/services/listening-history.service';
-import { PlaylistService } from 'src/app/services/playlist.service';
+import { PlaylistService, Song } from 'src/app/services/playlist.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-recommendations',
@@ -29,7 +30,7 @@ export class RecommendationsComponent implements OnChanges {
   constructor(
     private historyService: ListeningHistoryService,
     private playlistService: PlaylistService
-  ) {}
+  ) { }
 
   ngOnChanges() {
     const term = this.searchTerm.toLowerCase();
@@ -46,8 +47,33 @@ export class RecommendationsComponent implements OnChanges {
   }
 
   onAddToPlaylist(track: Track) {
-    const playlistName = 'Мої улюблені'; 
-    this.playlistService.addToPlaylist(playlistName, track);
-    alert(`Пісня "${track.title}" додана до плейлиста "${playlistName}"`);
+    if (!track.audioUrl) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Помилка',
+        text: 'Неможливо додати до плейлиста, оскільки відсутній URL аудіо',
+      });
+      return;
+    }
+
+    const playlistName = 'Мої улюблені';
+
+    const song: Song = {
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+      audioUrl: track.audioUrl
+    };
+
+    this.playlistService.addToPlaylist(playlistName, song);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Успіх',
+      text: `Пісня "${track.title}" додана до плейлиста "${playlistName}"`,
+      timer: 2000,
+      timerProgressBar: true,
+      showConfirmButton: false
+    });
   }
 }

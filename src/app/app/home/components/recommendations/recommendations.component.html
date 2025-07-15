@@ -1,15 +1,10 @@
-<h2>🎧 Рекомендації</h2>
-
 <div class="track-list">
   <app-track-card
     *ngFor="let track of filteredTracks; let i = index"
     [track]="track"
     [index]="i"
     [isActive]="i === currentPlayingIndex"
-    (playTrack)="onPlayTrack(i)">
+    (playTrack)="onPlayTrack(i)"
+    (addToPlaylist)="onAddToPlaylist($event)">
   </app-track-card>
-
-  <p *ngIf="filteredTracks.length === 0">
-    😢 Нічого не знайдено за запитом "{{ searchTerm }}"
-  </p>
 </div>

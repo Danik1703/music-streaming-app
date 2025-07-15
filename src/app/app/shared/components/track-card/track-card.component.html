@@ -4,15 +4,8 @@
     <p>{{ track.artist }}</p>
   </div>
 
-<iframe
-  #iframeRef
-  width="100%"
-  height="166"
-  scrolling="no"
-  frameborder="no"
-  allow="autoplay"
-  [src]="safeUrl">
-</iframe>
+  <iframe #iframeRef width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" [src]="safeUrl">
+  </iframe>
 
   <div class="controls">
     <button (click)="togglePlay()">
@@ -21,25 +14,17 @@
 
     <label>
       Volume:
-      <input
-        type="range"
-        min="0"
-        max="100"
-        [value]="volume"
-        (input)="changeVolume($event)"
-      />
+      <input type="range" min="0" max="100" [value]="volume" (input)="changeVolume($event)" />
     </label>
   </div>
 
   <div class="track-progress">
     <span>{{ formatTime(currentTime) }}</span>
-    <input
-      type="range"
-      min="0"
-      [max]="duration"
-      [value]="currentTime"
-      (input)="onSeek($event)"
-    />
+    <input type="range" min="0" [max]="duration" [value]="currentTime" (input)="onSeek($event)" />
     <span>{{ formatTime(duration) }}</span>
   </div>
+
+  <button class="add-to-playlist" (click)="onAddToPlaylist()">
+    ➕ Додати до плейлиста
+  </button>
 </div>
