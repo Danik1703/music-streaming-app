@@ -1,10 +1,17 @@
-<div class="track-list">
-  <app-track-card
-    *ngFor="let track of filteredTracks; let i = index"
-    [track]="track"
-    [index]="i"
-    [isActive]="i === currentPlayingIndex"
-    (playTrack)="onPlayTrack(i)"
-    (addToPlaylist)="onAddToPlaylist($event)">
-  </app-track-card>
+<div *ngFor="let track of filteredTracks; let i = index" class="track">
+  <img [src]="track.coverUrl || 'https://via.placeholder.com/320x180?text=No+Cover'" alt="{{ track.title }}">
+  <div class="info">
+    <h4>{{ track.title }}</h4>
+    <p>{{ track.artist }}</p>
+    <button (click)="onPlayTrack(i)">▶️ Відтворити</button>
+    <button (click)="onAddToPlaylist(track)">➕ У плейлист</button>
+  </div>
+  <div *ngIf="currentPlayingIndex === i" class="player">
+    <iframe width="100%" height="180"
+      [src]="'https://www.youtube.com/embed/' + track.youtubeVideoId + '?autoplay=1'"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
 </div>

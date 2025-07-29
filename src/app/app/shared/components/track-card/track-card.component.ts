@@ -1,125 +1,127 @@
-import {Component, Input, Output, EventEmitter, OnInit, OnDestroy,OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { Track } from 'src/app/services/listening-history.service';
 
-declare var SC: any;
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 @Component({
   selector: 'app-track-card',
   templateUrl: './track-card.component.html',
   styleUrls: ['./track-card.component.scss']
 })
-export class TrackCardComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+export class TrackCardComponent implements AfterViewInit, OnDestroy {
   @Input() track!: Track;
-  @Input() index!: number;
-  @Input() isActive = false;
-  @Output() playTrack = new EventEmitter<number>();
+  @Output() playTrack = new EventEmitter<void>();
   @Output() addToPlaylist = new EventEmitter<Track>();
 
-  @ViewChild('iframeRef', { static: false }) iframeRef!: ElementRef<HTMLIFrameElement>;
+  @ViewChild('playerContainer', { static: false }) playerContainer!: ElementRef;
 
-  safeUrl!: SafeResourceUrl;
-  widget: any;
+  player: any;
   isPlaying = false;
   volume = 50;
   currentTime = 0;
   duration = 0;
-  intervalId: any;
+  interval: any;
 
-  constructor(private sanitizer: DomSanitizer) {}
-
-  ngOnInit() {
-    this.prepareUrl();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['track']) {
-      this.prepareUrl();
-    }
-
-    if (changes['isActive'] && !this.isActive && this.widget) {
-      this.widget.pause();
-    }
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      if (!this.iframeRef?.nativeElement) return;
-
-      this.widget = SC.Widget(this.iframeRef.nativeElement);
-
-      this.widget.bind(SC.Widget.Events.READY, () => {
-        this.widget.setVolume(this.volume);
-        this.widget.getDuration((d: number) => this.duration = d / 1000);
-        this.startProgressUpdater();
-      });
-
-      this.widget.bind(SC.Widget.Events.PLAY, () => {
-        this.isPlaying = true;
-        this.playTrack.emit(this.index);
-      });
-
-      this.widget.bind(SC.Widget.Events.PAUSE, () => {
-        this.isPlaying = false;
-      });
-
-      this.widget.bind(SC.Widget.Events.FINISH, () => {
-        this.isPlaying = false;
-        this.currentTime = 0;
-      });
-    }, 300);
+  async ngAfterViewInit() {
+    await this.loadYouTubeApi();
+    this.initPlayer();
   }
 
   ngOnDestroy() {
-    if (this.intervalId) clearInterval(this.intervalId);
-  }
-
-  prepareUrl() {
-    const url = this.track?.audioUrl ?? '';
-    const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&auto_play=false`;
-    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
-  }
-
-  togglePlay() {
-    if (!this.widget) return;
-    this.widget.isPaused((paused: boolean) => {
-      paused ? this.widget.play() : this.widget.pause();
-    });
-  }
-
-  changeVolume(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.volume = Number(input.value);
-    this.widget?.setVolume(this.volume);
-  }
-
-  onSeek(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const seekTime = Number(input.value);
-    if (this.widget) {
-      this.widget.seekTo(seekTime * 1000);
-      this.currentTime = seekTime;
+    clearInterval(this.interval);
+    if (this.player) {
+      this.player.destroy();
     }
   }
 
-  startProgressUpdater() {
-    if (this.intervalId) clearInterval(this.intervalId);
-    this.intervalId = setInterval(() => {
-      if (this.widget && this.isPlaying) {
-        this.widget.getPosition((pos: number) => {
-          this.currentTime = pos / 1000;
-        });
+  loadYouTubeApi(): Promise<void> {
+    return new Promise((resolve) => {
+      if (window.YT && window.YT.Player) {
+        resolve();
+      } else {
+        window.onYouTubeIframeAPIReady = resolve;
+        const script = document.createElement('script');
+        script.src = 'https://www.youtube.com/iframe_api';
+        document.body.appendChild(script);
+      }
+    });
+  }
+
+  initPlayer() {
+    this.player = new window.YT.Player(this.playerContainer.nativeElement, {
+      height: '0',
+      width: '0',
+      videoId: this.track.youtubeVideoId,
+      playerVars: { autoplay: 0, controls: 0, enablejsapi: 1 },
+      events: {
+        onReady: () => {
+          this.player.setVolume(this.volume);
+          this.duration = this.player.getDuration();
+          this.trackProgress();
+        },
+        onStateChange: (e: any) => {
+          const YT = window.YT;
+          if (e.data === YT.PlayerState.PLAYING) {
+            this.isPlaying = true;
+          } else {
+            this.isPlaying = false;
+          }
+        }
+      }
+    });
+  }
+
+  togglePlay() {
+    if (!this.player) return;
+    const YT = window.YT;
+    const state = this.player.getPlayerState();
+    if (state === YT.PlayerState.PLAYING) {
+      this.player.pauseVideo();
+    } else {
+      this.player.playVideo();
+      this.playTrack.emit();
+    }
+  }
+
+  changeVolume(event: any) {
+    const value = +event.target.value;
+    this.volume = value;
+    this.player.setVolume(value);
+  }
+
+  seek(event: any) {
+    const value = +event.target.value;
+    this.player.seekTo(value, true);
+    this.currentTime = value;
+  }
+
+  trackProgress() {
+    clearInterval(this.interval);
+    this.interval = setInterval(() => {
+      if (this.player && this.isPlaying) {
+        this.currentTime = this.player.getCurrentTime();
+        this.duration = this.player.getDuration();
       }
     }, 500);
   }
 
   formatTime(seconds: number): string {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' + secs : secs}`;
-  }
-
-  onAddToPlaylist() {
-    this.addToPlaylist.emit(this.track);
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s < 10 ? '0' + s : s}`;
   }
 }

@@ -1,6 +1,8 @@
 import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { ListeningHistoryService, Track } from 'src/app/services/listening-history.service';
-import { PlaylistService, Song } from 'src/app/services/playlist.service';
+import { PlaylistService } from 'src/app/services/playlist.service';
+import { Song } from 'src/app/services/models/playlist.model';
+
 import Swal from 'sweetalert2';
 
 @Component({
@@ -13,24 +15,34 @@ export class RecommendationsComponent implements OnChanges {
   @Input() currentPlayingIndex: number | null = null;
   @Output() playTrack = new EventEmitter<number>();
 
-  allTracks: Track[] = [
-    { id: 1, title: 'Blinding Lights', artist: 'The Weeknd', audioUrl: 'https://soundcloud.com/theweeknd/blinding-lights' },
-    { id: 2, title: 'Shape of You', artist: 'Ed Sheeran', audioUrl: 'https://soundcloud.com/edsheeran/shape-of-you' },
-    { id: 3, title: 'Levitating', artist: 'Dua Lipa', audioUrl: 'https://soundcloud.com/dualipa/levitating' },
-    { id: 4, title: 'Bad Guy', artist: 'Billie Eilish', audioUrl: 'https://soundcloud.com/billieeilish/bad-guy' },
-    { id: 5, title: 'Watermelon Sugar', artist: 'Harry Styles', audioUrl: 'https://soundcloud.com/sudeep-shakya-6/harry-styles-watermelon-sugar' },
-    { id: 6, title: 'Senorita', artist: 'Shawn Mendes & Camila Cabello', audioUrl: 'https://soundcloud.com/officialshawnmendes/shawn-mendes-camila-cabello' },
-    { id: 7, title: 'Someone You Loved', artist: 'Lewis Capaldi', audioUrl: 'https://soundcloud.com/lewiscapaldi/someone-you-loved-1' },
-    { id: 8, title: 'Circles', artist: 'Post Malone', audioUrl: 'https://soundcloud.com/postmalone/circles' },
-    { id: 9, title: 'Old Town Road', artist: 'Lil Nas X', audioUrl: 'https://soundcloud.com/secret-service-862007284/old-town-road' }
-  ];
-
-  filteredTracks = [...this.allTracks];
+  allTracks: Track[] = [];
+  filteredTracks: Track[] = [];
 
   constructor(
     private historyService: ListeningHistoryService,
     private playlistService: PlaylistService
-  ) { }
+  ) {
+    const rawTracks: Track[] = [
+      { id: 1, title: 'Blinding Lights', artist: 'The Weeknd', youtubeVideoId: '4NRXx6U8ABQ' },
+      { id: 2, title: 'Shape of You', artist: 'Ed Sheeran', youtubeVideoId: 'JGwWNGJdvx8' },
+      { id: 3, title: 'Levitating', artist: 'Dua Lipa', youtubeVideoId: 'TUVcZfQe-Kw' },
+      { id: 4, title: 'Bad Guy', artist: 'Billie Eilish', youtubeVideoId: 'DyDfgMOUjCI' },
+      { id: 5, title: 'Watermelon Sugar', artist: 'Harry Styles', youtubeVideoId: 'E07s5ZYygMg' },
+      { id: 6, title: 'Senorita', artist: 'Shawn Mendes & Camila Cabello', youtubeVideoId: 'Pkh8UtuejGw' },
+      { id: 7, title: 'Someone You Loved', artist: 'Lewis Capaldi', youtubeVideoId: 'zABLecsR5UE' },
+      { id: 8, title: 'Circles', artist: 'Post Malone', youtubeVideoId: 'wXhTHyIgQ_U' },
+      { id: 9, title: 'Old Town Road', artist: 'Lil Nas X', youtubeVideoId: 'r7qovpFAGrQ' }
+    ];
+
+    this.allTracks = rawTracks.map(track => ({
+      ...track,
+      coverUrl: track.youtubeVideoId
+        ? this.historyService.getCoverUrlFromYouTube(track.youtubeVideoId)
+        : undefined
+    }));
+
+    this.filteredTracks = [...this.allTracks];
+  }
 
   ngOnChanges() {
     const term = this.searchTerm.toLowerCase();
@@ -47,11 +59,11 @@ export class RecommendationsComponent implements OnChanges {
   }
 
   onAddToPlaylist(track: Track) {
-    if (!track.audioUrl) {
+    if (!track.youtubeVideoId) {
       Swal.fire({
         icon: 'error',
         title: 'Помилка',
-        text: 'Неможливо додати до плейлиста, оскільки відсутній URL аудіо',
+        text: 'Неможливо додати до плейлиста, оскільки відсутній YouTube ID',
       });
       return;
     }
@@ -62,7 +74,7 @@ export class RecommendationsComponent implements OnChanges {
       id: track.id,
       title: track.title,
       artist: track.artist,
-      audioUrl: track.audioUrl
+      youtubeVideoId: track.youtubeVideoId
     };
 
     this.playlistService.addToPlaylist(playlistName, song);

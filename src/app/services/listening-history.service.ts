@@ -9,10 +9,12 @@ export interface Track {
   id: number;
   title: string;
   artist: string;
+  youtubeVideoId?: string;
+  audioUrl?: string;
   album?: string;
   coverUrl?: string;
-  audioUrl?: string;
 }
+
 
 const STORAGE_KEY = 'listening_history';
 
@@ -42,37 +44,21 @@ export class ListeningHistoryService {
   }
 
 
-  getCoverUrlFromSoundCloud(trackUrl: string): Observable<string | null> {
-    const apiUrl = `https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(trackUrl)}`;
+getCoverUrlFromYouTube(videoId: string): string {
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+}
 
-    return this.http.get<{ thumbnail_url: string }>(apiUrl).pipe(
-      map(response => {
-        if (response.thumbnail_url) {
-          return response.thumbnail_url.replace('large', 't500x500');
-        }
-        return null;
-      }),
-      catchError(() => of(null))
-    );
+addToHistory(track: Track): void {
+  const last = this.history[this.history.length - 1];
+  if (last && last.id === track.id) return;
+
+  if (!track.coverUrl && track.youtubeVideoId) {
+    track.coverUrl = this.getCoverUrlFromYouTube(track.youtubeVideoId);
   }
 
-  addToHistory(track: Track): void {
-    const last = this.history[this.history.length - 1];
-    if (last && last.id === track.id) {
-      return;
-    }
-
-    if (!track.coverUrl && track.audioUrl) {
-      this.getCoverUrlFromSoundCloud(track.audioUrl).subscribe(coverUrl => {
-        track.coverUrl = coverUrl ?? 'https://via.placeholder.com/320x180?text=No+Cover';
-        this.history.push(track);
-        this.saveToStorage();
-      });
-    } else {
-      this.history.push(track);
-      this.saveToStorage();
-    }
-  }
+  this.history.push(track);
+  this.saveToStorage();
+}
 
   clearHistory(): void {
     this.history = [];

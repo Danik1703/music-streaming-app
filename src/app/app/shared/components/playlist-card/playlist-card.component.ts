@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Playlist } from 'src/app/services/playlist.service';
+import { Playlist } from 'src/app/services/models/playlist.model';
 
 @Component({
   selector: 'app-playlist-card',
