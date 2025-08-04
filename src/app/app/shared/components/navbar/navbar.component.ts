@@ -1,4 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
+import { SearchService } from 'src/app/services/search.service';
 
 @Component({
   selector: 'app-navbar',
@@ -6,9 +7,9 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  @Output() searchChanged = new EventEmitter<string>();
+  constructor(private searchService: SearchService) {}
 
   onSearchChange(term: string) {
-    this.searchChanged.emit(term);
+    this.searchService.setSearchTerm(term); 
   }
 }

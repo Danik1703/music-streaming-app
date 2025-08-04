@@ -1,17 +1,23 @@
-<div *ngFor="let playlist of playlists">
-  <app-playlist-card
-    [playlist]="playlist"
-    (clicked)="selectPlaylist(playlist)"
-  ></app-playlist-card>
-  <button (click)="deletePlaylist(playlist.id)">Видалити</button>
-</div>
-
-<div *ngIf="selectedPlaylist">
-  <h3>{{ selectedPlaylist.name }}</h3>
+<div class="playlists">
   <ul>
-    <li *ngFor="let song of selectedPlaylist.songs">
-      {{ song.title }} — {{ song.artist }}
-      <button (click)="deleteSongFromPlaylist(song.id)">Видалити трек</button>
+    <li *ngFor="let pl of playlists" 
+        [class.active]="pl.id === selectedPlaylist?.id"
+        (click)="selectPlaylist(pl)">
+      {{ pl.name }} ({{ pl.songs.length }})
     </li>
   </ul>
+</div>
+
+<div class="songs" *ngIf="selectedPlaylist">
+  <h3>{{ selectedPlaylist.name }}</h3>
+
+  <div *ngIf="selectedPlaylist.songs.length; else empty">
+    <div *ngFor="let song of selectedPlaylist.songs">
+      {{ song.title }} — {{ song.artist }}
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <p>Плейлист пустий</p>
+  </ng-template>
 </div>

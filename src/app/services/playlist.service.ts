@@ -1,6 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Playlist, Song } from './models/playlist.model';
+
+export interface Song {
+  id: number;
+  title: string;
+  artist: string;
+  audioUrl: string;
+  duration?: number;
+}
+
+export interface Playlist {
+  id: number;
+  name: string;
+  description?: string;
+  songs: Song[];
+  cover?: string;
+}
 
 const STORAGE_KEY = 'playlists';
 
@@ -39,23 +54,32 @@ export class PlaylistService {
     return this.playlists$;
   }
 
-  addToPlaylist(playlistName: string, song: Song) {
-    let playlist = this.playlists.find(pl => pl.name === playlistName);
+ addToPlaylist(playlistName: string, song: Song) {
+  console.log(`Добавляем в плейлист: ${playlistName}`, song);
 
-    if (!playlist) {
-      playlist = {
-        id: Date.now(),
-        name: playlistName,
-        songs: []
-      };
-      this.playlists.push(playlist);
-    }
+  let playlist = this.playlists.find(pl => pl.name === playlistName);
 
-    if (!playlist.songs.find(s => s.id === song.id)) {
-      playlist.songs.push(song);
-      this.saveToStorage();
-    }
+  if (!playlist) {
+    playlist = {
+      id: Date.now(),
+      name: playlistName,
+      songs: []
+    };
+    this.playlists.push(playlist);
+    console.log('Создан новый плейлист:', playlist);
   }
+
+  const exists = playlist.songs.some(s => s.id === song.id);
+
+  if (!exists) {
+    playlist.songs = [...playlist.songs, song]; // важно: создаём новый массив
+    this.playlists = this.playlists.map(pl => pl.id === playlist!.id ? { ...playlist! } : pl);
+    this.saveToStorage();
+    console.log('Песня добавлена:', song);
+  } else {
+    console.log('Песня уже есть в плейлисте');
+  }
+}
 
   update(updatedPlaylist: Playlist) {
     const index = this.playlists.findIndex(pl => pl.id === updatedPlaylist.id);

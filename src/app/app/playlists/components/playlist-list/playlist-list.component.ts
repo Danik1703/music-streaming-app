@@ -18,6 +18,7 @@ export class PlaylistListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sub = this.playlistService.playlists$.subscribe(data => {
       this.playlists = data;
+      // обновляем выбранный плейлист, чтобы был актуален после обновления списка
       this.selectedPlaylist = data.find(p => p.id === this.selectedPlaylist?.id);
     });
   }

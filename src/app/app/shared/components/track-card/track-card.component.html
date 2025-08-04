@@ -1,24 +1,29 @@
-<div class="track-card">
+<div class="track-card" [class.active]="isActive">
   <div class="track-info">
-    <img [src]="track.coverUrl" alt="cover" />
-    <div>
-      <h4>{{ track.title }}</h4>
-      <p>{{ track.artist }}</p>
-    </div>
+    <h4>{{ track.title }}</h4>
+    <p>{{ track.artist }}</p>
   </div>
+
+  <iframe #iframeRef width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" [src]="safeUrl"></iframe>
 
   <div class="controls">
-    <button (click)="togglePlay()">{{ isPlaying ? '⏸ Pause' : '▶️ Play' }}</button>
-    <input type="range" min="0" max="100" [value]="volume" (input)="changeVolume($event)" />
+    <button (click)="togglePlay()">
+      {{ isPlaying ? 'Pause' : 'Play' }}
+    </button>
+
+    <label>
+      Volume:
+      <input type="range" min="0" max="100" [value]="volume" (input)="changeVolume($event)" />
+    </label>
   </div>
 
-  <div class="progress">
+  <div class="track-progress">
     <span>{{ formatTime(currentTime) }}</span>
-    <input type="range" [min]="0" [max]="duration" [value]="currentTime" (input)="seek($event)" />
+    <input type="range" min="0" [max]="duration" [value]="currentTime" (input)="onSeek($event)" />
     <span>{{ formatTime(duration) }}</span>
   </div>
 
-  <button (click)="addToPlaylist.emit(track)">➕ В плейлист</button>
-
-  <div #playerContainer style="display: none;"></div>
+  <button class="add-to-playlist" (click)="onAddToPlaylist()">
+    ➕ Додати до плейлиста
+  </button>
 </div>
