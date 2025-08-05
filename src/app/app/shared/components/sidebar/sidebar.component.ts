@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PlaylistService, Playlist } from 'src/app/services/playlist.service';
+import { PlaylistService } from 'src/app/services/playlist.service';
+import { Playlist } from 'src/app/services/models/playlist.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -15,7 +16,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.playlistService.playlists$.subscribe(data => {
-      this.playlists = data;
+      this.playlists = data.length ? data : [
+        { id: 1, name: 'Мої улюблені', songs: [] },
+        { id: 2, name: 'Релакс', songs: [] },
+        { id: 3, name: 'Пробудження', songs: [] }
+      ];
     });
   }
 

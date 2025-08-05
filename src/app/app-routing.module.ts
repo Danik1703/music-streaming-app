@@ -1,5 +1,8 @@
 import { NgModule, Injectable } from '@angular/core';
 import { RouterModule, Routes, CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { PlatformHelper } from  '@natec/mef-dev-platform-connector';
+
+
 
 import { RecommendationsComponent } from './app/home/components/recommendations/recommendations.component';
 import { NewReleasesComponent } from './app/home/components/new-releases/new-releases.component';

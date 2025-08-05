@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ListeningHistoryService, Track } from 'src/app/services/listening-history.service';
-import { PlaylistService, Song } from 'src/app/services/playlist.service';
+import { PlaylistService } from 'src/app/services/playlist.service';
+import { Song } from 'src/app/services/models/playlist.model';
 import { SearchService } from 'src/app/services/search.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';

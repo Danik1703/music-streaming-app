@@ -1,7 +1,7 @@
 <div class="top-charts">
     <h2>Топ треків</h2>
     <div class="chart-grid">
-        <div class="chart-item" *ngFor="let track of tracks">
+        <div class="chart-item" *ngFor="let track of filteredTracks">
             <img [src]="track.coverUrl" alt="{{ track.title }}" class="cover" />
             <div class="track-info">
                 <div class="title">{{ track.title }}</div>

@@ -8,6 +8,6 @@ export const PLUGIN_VERSION = {
     "suffix": "",
     "semverString": null,
     "name": "music-streaming-app",
-    "version": "1.1.1",
+    "version": "1.0.0",
     "main": "main.js"
 };
